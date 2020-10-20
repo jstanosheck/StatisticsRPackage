@@ -21,6 +21,23 @@ MyKmeans <- function(X, K, M = NULL, numIter = 100){
   n = nrow(X) # number of rows in X
   
   # Check whether M is NULL or not. If NULL, initialize based on K random points from X. If not NULL, check for compatibility with X dimensions.
+  if ( is.null(M) ){
+    M <- X[ sample( 1:nrow(X), K ), , drop = F ] # K randomly selected M cluster centers
+  } else {
+    if ( dim( as.matrix(M) )[2] != ncol(X) ){
+      
+      stop( "Unequal number of columns between X and M" )
+      
+    }else if ( dim( as.matrix(M) )[1] > nrow(X) ){
+      
+      stop( "Number of M clusters exceeds the number of rows of X" )
+      
+    }else if ( any( duplicated(M) ) ){
+      
+      stop( "Duplicated clusters" )
+      
+    }
+  } # Assuming no error, we now have a given X matrix, a pre-selected K number of clusters, and a valid M centroid matrix
   
   
   # Call C++ MyKmeans_c function to implement the algorithm
