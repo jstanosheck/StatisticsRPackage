@@ -1,12 +1,17 @@
 Package: GroupHW
 Type: Package
-Title: What the package does (short line)
+Title: Group HW Collaboration
 Version: 1.0
 Date: 2020-10-17
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Author: c(person("John", "Schwenck",
+                  email = "jschwenck@stat.tamu.edu",
+                  role = "aut"),
+          person("Jacob", "Stanosheck",
+                  email = "",
+                  role = "aut"))
+Maintainer: John Schwenck <jschwenck@stat.tamu.edu>
+Description: Fast implementations of K-Means Clustering and Multi-Class Logistic Regression algorithms wrapped in low-level C++
+License: GPL-3
 Imports: Rcpp (>= 1.0.5)
 LinkingTo: Rcpp, RcppArmadillo
 RoxygenNote: 7.1.1
