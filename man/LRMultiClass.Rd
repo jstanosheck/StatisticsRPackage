@@ -2,28 +2,28 @@
 % Please edit documentation in R/LR_wrapper.R
 \name{LRMultiClass}
 \alias{LRMultiClass}
-\title{Title}
+\title{Multi-Class Logistic Regression}
 \usage{
 LRMultiClass(X, y, numIter = 50, eta = 0.1, lambda = 1, beta_init = NULL)
 }
 \arguments{
-\item{X}{}
+\item{X}{-Matrix of n x p of the training data set. Where n is the number of instances and p is the number of variables}
 
-\item{y}{}
+\item{y}{-Vector of length n with the ground truth class labels for each instance. The class labels must be 0 to K-1.}
 
-\item{numIter}{}
+\item{numIter}{-The number of iterations the function will run before reporting a result. The default number is 50.}
 
-\item{eta}{}
+\item{eta}{-The learning rate of the function. The default value is 0.1.}
 
-\item{lambda}{}
+\item{lambda}{-The ridge optimization parameter. The default value is 1}
 
-\item{beta_init}{}
+\item{beta_init}{-(Optional) Matrix of p x K that is the initial values for beta in the algorithm. The default value is a zero matrix.}
 }
 \value{
 
 }
 \description{
-Title
+Multi-Class Logistic Regression
 }
 \examples{
 # Give example
