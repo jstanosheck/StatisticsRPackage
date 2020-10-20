@@ -2,25 +2,31 @@
 % Please edit documentation in R/Kmeans_wrapper.R
 \name{MyKmeans}
 \alias{MyKmeans}
-\title{Title}
+\title{K-Means Clustering}
 \usage{
 MyKmeans(X, K, M = NULL, numIter = 100)
 }
 \arguments{
-\item{X}{}
+\item{X}{Initial Data matrix consisting of numeric entries}
 
-\item{K}{}
+\item{K}{A scalar corresponding to the number of clusters}
 
-\item{M}{}
+\item{M}{A Matrix of cluster centers}
 
-\item{numIter}{}
+\item{numIter}{A scalar that determines the maximum number of iterations for the algorithm in order to prevent an infinite loop.}
 }
 \value{
-Explain return
+A vector of cluster assignments (1 to K). The returned output will have the same length as the initial data matrix X
 }
 \description{
-Title
+K-Means Clustering
 }
 \examples{
-# Give example
+K = 10
+M = NULL
+numIter = 50
+data(iris)
+iris_data <- iris[, -5]
+MyKmeans(iris_data, K = 3)
+
 }
