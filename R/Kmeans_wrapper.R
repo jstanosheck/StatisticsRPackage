@@ -1,15 +1,21 @@
-#' Title
+#' K-Means Clustering
 #'
-#' @param X 
-#' @param K 
-#' @param M 
-#' @param numIter 
+#' @param X Initial Data matrix consisting of numeric entries
+#' @param K A scalar corresponding to the number of clusters
+#' @param M A Matrix of cluster centers
+#' @param numIter A scalar that determines the maximum number of iterations for the algorithm in order to prevent an infinite loop. 
 #'
-#' @return Explain return
+#' @return A vector of cluster assignments (1 to K). The returned output will have the same length as the initial data matrix X
 #' @export
 #'
 #' @examples
-#' # Give example
+#' K = 10
+#' M = NULL
+#' numIter = 50
+#' data(iris)
+#' iris_data <- iris[, -5]
+#' MyKmeans(iris_data, K = 3)
+#' 
 MyKmeans <- function(X, K, M = NULL, numIter = 100){
   
   n = nrow(X) # number of rows in X
