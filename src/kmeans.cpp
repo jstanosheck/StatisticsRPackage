@@ -14,7 +14,7 @@
 // numIter - maximal number of iterations
 // [[Rcpp::export]]
 //arma::uvec
-arma::uvec MyKmeans_c(const arma::mat& X, int K,
+arma::mat MyKmeans_c(const arma::mat& X, int K,
                             const arma::mat& M, int numIter = 100){
     // All input is assumed to be correct
     
@@ -24,8 +24,11 @@ arma::uvec MyKmeans_c(const arma::mat& X, int K,
     arma::uvec Y(n); // to store cluster assignments
     
     // Initialize any additional parameters if needed
+    arma::mat M_loop = M;
     
     // For loop with kmeans algorithm
+    
+    arma::mat clust_init = M_loop;
     
     // Expand Squared Euclidean Distance into ||X||^2 , ||M||^2 , and -2 * X * t(M)
     arma::mat xTx(n, K, arma::fill::zeros); // Initialize for ||X||^2
@@ -34,15 +37,22 @@ arma::uvec MyKmeans_c(const arma::mat& X, int K,
     
     for(int ii = 0; ii < K; ii++){
         xTx.col(ii) = sum( pow(X, 2), 1);
-        mTm.each_row() = sum( pow(M, 2), 1).t();
-        xmT = 2 * (X * M.t());
+        mTm.each_row() = sum( pow(M_loop, 2), 1).t();
+        xmT = 2 * (X * M_loop.t());
     }
 
     arma::mat euc_dist = xTx + mTm - xmT;
     Y = index_max(-euc_dist, 1);
     
+    //insert for loop here for each kk cluster
+    for(double kk = 1; kk < K; kk++){
+        M_loop.row(kk) = mean( X.rows(find(Y == kk)), 0);
+    }
+    
+    //double converge_diff = std::fabs( clust_init - M_loop ) );
+    // put if statement for monitoring convergence level here
     
     // Returns the vector of cluster assignments
-    return(Y);
+    return(M_loop);
 }
 
