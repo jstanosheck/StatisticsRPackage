@@ -45,14 +45,14 @@ arma::mat MyKmeans_c(const arma::mat& X, int K,
     Y = index_max(-euc_dist, 1);
     
     //insert for loop here for each kk cluster
-    for(double kk = 1; kk < K; kk++){
+    for(double kk = 0; kk < K; kk++){
         M_loop.row(kk) = mean( X.rows(find(Y == kk)), 0);
     }
     
-    //double converge_diff = std::fabs( clust_init - M_loop ) );
+    arma::mat converge_diff = clust_init - M_loop; // why is this not calculating properly??
     // put if statement for monitoring convergence level here
     
     // Returns the vector of cluster assignments
-    return(M_loop);
+    return(converge_diff);
 }
 
