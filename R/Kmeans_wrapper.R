@@ -19,6 +19,7 @@
 MyKmeans <- function(X, K, M = NULL, numIter = 100){
   
   n = nrow(X) # number of rows in X
+  X <- as.matrix(X)
   
   # Check whether M is NULL or not. If NULL, initialize based on K random points from X. If not NULL, check for compatibility with X dimensions.
   if ( is.null(M) ){
