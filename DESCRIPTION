@@ -7,7 +7,7 @@ Author: c(person("John", "Schwenck",
                   email = "jschwenck@stat.tamu.edu",
                   role = "aut"),
           person("Jacob", "Stanosheck",
-                  email = "",
+                  email = "jstanosheck@tamu.edu",
                   role = "aut"))
 Maintainer: John Schwenck <jschwenck@stat.tamu.edu>
 Description: Fast implementations of K-Means Clustering and Multi-Class Logistic Regression algorithms wrapped in low-level C++
