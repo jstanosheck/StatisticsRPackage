@@ -8,6 +8,23 @@
 //
 // [[Rcpp::depends(RcppArmadillo)]]
 
+//Create soft_max_c function that gets the probability in a matrix form
+// [[Rcpp::export]]
+arma::mat soft_max_c(arma::mat X, arma::mat beta){
+    
+    //multilply x and beta to get xbeta
+    arma::mat xbeta = X * beta;
+    
+    //find the sum of the rows of exp(xbeta)
+    arma::mat denom = arma::diagmat(1 / sum(exp(xbeta), 1));
+    
+    
+    //calculates the probabilities for each element in the matrix
+    arma::mat softmax = exp(xbeta) * denom;
+    return(softmax);
+}
+
+
 // For simplicity, no test data, only training data, and no error calculation.
 // X - n x p data matrix
 // y - n length vector of classes, from 0 to K-1
