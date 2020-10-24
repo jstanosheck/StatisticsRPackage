@@ -24,18 +24,16 @@ arma::mat soft_max_c(arma::mat X, arma::mat beta){
 }
 
 //Create objective function. Will have for loop
-double objective_function(arma::mat& beta, arma::mat probability,
-                             double lambda, arma::mat& X, arma::uvec& Y){
+double objective_function(arma::mat& beta, arma::mat probability, double lambda,
+                          arma::mat& X, arma::uvec& Y, int K, int n){
     //initialize local variables
-    int K = max(Y) +1; //gets the number of classes in Y when classes are 0 to K-1
-    int n = X.rows(); //gets the number of rows in X
     arma::vec inner_obj(n, 0); //vector of size n with all values=0
     
     //lambda term in objective function 
     double lambda_sum = (lambda / 2) * arma::sum(arma::sum(beta^2, 0), 1);
     
     //loop to get log probability for each K value
-    for (int i, i < K, i++){
+    for (int i = 0, i < K, i++){
         //finds the indexes of Y that follow the logical function
         arma::uvec index = arma::find(Y == i -1);
         
@@ -48,18 +46,34 @@ double objective_function(arma::mat& beta, arma::mat probability,
     return(objective);
 }
 
+//generate the gradient for the logistic function
+arma::mat logistic_gradient(arma::mat&X, arma::uvec& Y, arma::mat& beta, double lambda,
+                            int K, int n){
+    
+}
+
 //create update beta function loop through K
 arma::mat update_beta(arma::mat& beta, arma::mat& X, arma::uvec& Y,
-                      double eta, double lambda){
+                      double eta, double lambda, int K, int p){
     //initialize local variables
-    int K = max(Y) +1; //gets the number of classes in Y when classes are 0 to K-1
-    int p = X.cols(); //gets the number of columns in X
     arma::mat prob = soft_max_c(X, beta); //gets the probability for the current beta
     arma::vec lambda_vec(p, lambda); //generates vector of length p with values lambda
     arma::mat lam = arma::diagmat(lambda_vec); //generates diagonal matrix 
     arma::mat new_beta = arma::zeros(p, K); //generates p x K matrix of 0's 
     
     //loop to set new_beta
+    for (int i = 0, i < K, i++){
+        //weight for instance K
+        arma::colvec w = prob.col(i) * (1 - prob.col(i));
+        
+        //multiply X * w to get the weighted X to find Hessian
+        arma::mat weighted_X = X * w;
+        
+        //find Hessian by multiplying xTxw + lam
+        arma::mat H = X.t() * weighted_X + lam;
+        
+        //find gradient 
+    }
     
 }
 
