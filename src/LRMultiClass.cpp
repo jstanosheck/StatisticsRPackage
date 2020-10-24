@@ -8,8 +8,8 @@
 //
 // [[Rcpp::depends(RcppArmadillo)]]
 
-//Create soft_max_c function that gets the probability in a matrix form
-arma::mat soft_max_c(arma::mat X, arma::mat beta){
+//Create softmax_c function that gets the probability in a matrix form
+arma::mat softmax_c(arma::mat X, arma::mat beta){
     
     //multilply x and beta to get xbeta
     arma::mat xbeta = X * beta;
@@ -49,14 +49,28 @@ double objective_function(arma::mat& beta, arma::mat probability, double lambda,
 //generate the gradient for the logistic function
 arma::mat logistic_gradient(arma::mat&X, arma::uvec& Y, arma::mat& beta,
                             double lambda, int K, int n){
+    //initialize probability matrix with old probabilities
+    arma::mat prob_mat = softmax_c(X, beta); //initializes n x K matrix of 0's
     
+    //loop to generate prob_mat values
+    for (int i = 0, i < K, i++){
+        //get indexes for all values of Y == i for K
+        arma::uvec index = arma::find(Y == i);
+        
+        //Reduce the value of prob_mat by one for all indexes of Y==i
+        prob_mat(index, i) = prob_mat(index, i) - 1;
+    }
+    //calculate gradient with new probability matrix
+    gradient = X.t() * prob_mat + lambda * beta;
+    
+    return(gradient);
 }
 
 //create update beta function loop through K
 arma::mat update_beta(arma::mat& beta, arma::mat& X, arma::uvec& Y,
                       double eta, double lambda, int K, int p){
     //initialize local variables
-    arma::mat prob = soft_max_c(X, beta); //gets the probability for the current beta
+    arma::mat prob = softmax_c(X, beta); //gets the probability for the current beta
     arma::vec lambda_vec(p, lambda); //generates vector of length p with values lambda
     arma::mat lam = arma::diagmat(lambda_vec); //generates diagonal matrix 
     arma::mat new_beta = arma::zeros(p, K); //generates p x K matrix of 0's 
