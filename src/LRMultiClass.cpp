@@ -9,6 +9,7 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 
 //Create softmax_c function that gets the probability in a matrix form
+// [[Rcpp::export]]
 arma::mat softmax_c(arma::mat X, arma::mat beta){
     
     //multilply x and beta to get xbeta
@@ -24,13 +25,14 @@ arma::mat softmax_c(arma::mat X, arma::mat beta){
 }
 
 //Create objective function. Will have for loop
+// [[Rcpp::export]]
 double objective_function(arma::mat& beta, arma::mat probability, double lambda,
                           arma::mat& X, arma::uvec& Y, int K, int n){
     //initialize local variables
     arma::vec inner_obj(n, 0); //vector of size n with all values=0
     
     //lambda term in objective function 
-    double lambda_sum = (lambda / 2) * arma::sum(arma::sum(beta^2, 0), 1);
+    double lambda_sum = (lambda / 2) * arma::sum(arma::sum(beta % beta, 0), 1);
     
     //loop to get log probability for each K value
     for (int i = 0; i < K; i++){
@@ -47,6 +49,7 @@ double objective_function(arma::mat& beta, arma::mat probability, double lambda,
 }
 
 //generate the gradient for the logistic function
+// [[Rcpp::export]]
 arma::mat logistic_gradient(arma::mat&X, arma::uvec& Y, arma::mat& beta,
                             double lambda, int K, int n){
     //initialize probability matrix with old probabilities
@@ -58,15 +61,16 @@ arma::mat logistic_gradient(arma::mat&X, arma::uvec& Y, arma::mat& beta,
         arma::uvec index = arma::find(Y == i);
         
         //Reduce the value of prob_mat by one for all indexes of Y==i
-        prob_mat(index, i) = prob_mat(index, i) - 1;
+        prob_mat(index, i) -= 1;
     }
     //calculate gradient with new probability matrix
-    gradient = X.t() * prob_mat + lambda * beta;
+    arma::mat gradient = X.t() * prob_mat + lambda * beta;
     
     return(gradient);
 }
 
 //create update beta function loop through K
+// [[Rcpp::export]]
 arma::mat update_beta(arma::mat& beta, arma::mat& X, arma::uvec& Y,
                       double eta, double lambda, int K, int p, int n){
     //initialize local variables
@@ -87,7 +91,7 @@ arma::mat update_beta(arma::mat& beta, arma::mat& X, arma::uvec& Y,
         arma::mat H = X.t() * weighted_X + lam;
         
         //find gradient 
-        beta_gradient = gradient(X, Y, beta, lambda, K, n);
+        arma::mat beta_gradient = logistic_gradient(X, Y, beta, lambda, K, n);
         
         //update column i of new_beta matrix
         new_beta.col(i) = beta.col(i) - eta * arma::solve(H, beta_gradient);
@@ -117,18 +121,18 @@ Rcpp::List LRMultiClass_c(const arma::mat& X, const arma::uvec& y, const arma::m
     
     // Starting value of objective function and initial probability
     arma::mat initial_probability = softmax_c(X, beta);
-    objective(0) = objective_function(beta, initial_probability, lambda, X, Y, K, n);
+    objective(0) = objective_function(beta, initial_probability, lambda, X, y, K, n);
     
     // Newton's method cycle - implement the update EXACTLY numIter iterations
     for (int s = 1; s < numIter; s++){
         //update the beta to the new beta
-        beta = update_beta(beta,  X, Y, eta, lambda, K, p, n);
+        beta = update_beta(beta,  X, y, eta, lambda, K, p, n);
         
         //generates new probability with the updated beta
         arma::mat new_probability = softmax_c(X, beta);
         
         //find new objective function value and store in objective vector
-        abjective(s) = objective_function(veat, new_probability, lambda, X, Y, K, n);
+        objective(s) = objective_function(beta, new_probability, lambda, X, y, K, n);
     }
     
     // Create named list with betas and objective values
