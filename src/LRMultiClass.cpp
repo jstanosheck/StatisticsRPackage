@@ -68,7 +68,7 @@ arma::mat logistic_gradient(arma::mat&X, arma::uvec& Y, arma::mat& beta,
 
 //create update beta function loop through K
 arma::mat update_beta(arma::mat& beta, arma::mat& X, arma::uvec& Y,
-                      double eta, double lambda, int K, int p){
+                      double eta, double lambda, int K, int p, int n){
     //initialize local variables
     arma::mat prob = softmax_c(X, beta); //gets the probability for the current beta
     arma::vec lambda_vec(p, lambda); //generates vector of length p with values lambda
@@ -87,8 +87,13 @@ arma::mat update_beta(arma::mat& beta, arma::mat& X, arma::uvec& Y,
         arma::mat H = X.t() * weighted_X + lam;
         
         //find gradient 
+        beta_gradient = gradient(X, Y, beta, lambda, K, n);
+        
+        //update column i of new_beta matrix
+        new_beta.col(i) = beta.col(i) - eta * arma::solve(H, beta_gradient);
     }
     
+    return(new_beta);
 }
 
 // For simplicity, no test data, only training data, and no error calculation.
@@ -110,7 +115,9 @@ Rcpp::List LRMultiClass_c(const arma::mat& X, const arma::uvec& y, const arma::m
     arma::mat beta = beta_init; // to store betas and be able to change them if needed
     arma::vec objective(numIter + 1); // to store objective values
     
-    // Initialize anything else that you may need
+    // Starting value of objective function and initial probability
+    arma::mat initial_probability = softmax_c(X, beta);
+    objective(0) = objective_function(beta, ):
     
     // Newton's method cycle - implement the update EXACTLY numIter iterations
     
