@@ -31,6 +31,21 @@ double objective_function(arma::mat beta, arma::mat probability,
     int n = X.rows(); //gets the number of rows in X
     arma::vec inner_obj(n, 0); //vector of size n with all values=0
     
+    //lambda term in objective function 
+    double lambda_sum = (lambda / 2) * arma::sum(arma::sum(beta^2, 0), 1);
+    
+    //loop to get log probability for each K value
+    for (int i, i < K, i++){
+        //finds the indexes of Y that follow the logical function
+        arma::uvec index = arma::find(Y == i -1);
+        
+        //finds the log(probability) for each index 
+        inner_obj(index) = log(probability(index, i));
+    }
+    //adds the sum of the inner object and the lambda sum to get the objective value
+    double objective = -sum(inner_obj) + lambda_sum;
+    
+    return(objective);
 }
 
 // For simplicity, no test data, only training data, and no error calculation.
