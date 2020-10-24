@@ -9,7 +9,6 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 
 //Create soft_max_c function that gets the probability in a matrix form
-// [[Rcpp::export]]
 arma::mat soft_max_c(arma::mat X, arma::mat beta){
     
     //multilply x and beta to get xbeta
@@ -24,6 +23,15 @@ arma::mat soft_max_c(arma::mat X, arma::mat beta){
     return(softmax);
 }
 
+//Create objective function. Will have for loop
+double objective_function(arma::mat beta, arma::mat probability,
+                             double lambda, arma::mat& X, arma::uvec& Y){
+    //initialize local variables
+    int K = max(Y) +1; //gets the number of classes in Y when classes are 0 to K-1
+    int n = X.rows(); //gets the number of rows in X
+    arma::vec inner_obj(n, 0); //vector of size n with all values=0
+    
+}
 
 // For simplicity, no test data, only training data, and no error calculation.
 // X - n x p data matrix
