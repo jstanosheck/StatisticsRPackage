@@ -33,7 +33,7 @@ double objective_function(arma::mat& beta, arma::mat probability, double lambda,
     double lambda_sum = (lambda / 2) * arma::sum(arma::sum(beta^2, 0), 1);
     
     //loop to get log probability for each K value
-    for (int i = 0, i < K, i++){
+    for (int i = 0; i < K; i++){
         //finds the indexes of Y that follow the logical function
         arma::uvec index = arma::find(Y == i);
         
@@ -53,7 +53,7 @@ arma::mat logistic_gradient(arma::mat&X, arma::uvec& Y, arma::mat& beta,
     arma::mat prob_mat = softmax_c(X, beta); //initializes n x K matrix of 0's
     
     //loop to generate prob_mat values
-    for (int i = 0, i < K, i++){
+    for (int i = 0; i < K; i++){
         //get indexes for all values of Y == i for K
         arma::uvec index = arma::find(Y == i);
         
@@ -76,7 +76,7 @@ arma::mat update_beta(arma::mat& beta, arma::mat& X, arma::uvec& Y,
     arma::mat new_beta = arma::zeros(p, K); //generates p x K matrix of 0's 
     
     //loop to set new_beta
-    for (int i = 0, i < K, i++){
+    for (int i = 0; i < K; i++){
         //weight for instance K
         arma::colvec w = prob.col(i) * (1 - prob.col(i));
         
@@ -117,10 +117,19 @@ Rcpp::List LRMultiClass_c(const arma::mat& X, const arma::uvec& y, const arma::m
     
     // Starting value of objective function and initial probability
     arma::mat initial_probability = softmax_c(X, beta);
-    objective(0) = objective_function(beta, ):
+    objective(0) = objective_function(beta, initial_probability, lambda, X, Y, K, n);
     
     // Newton's method cycle - implement the update EXACTLY numIter iterations
-    
+    for (int s = 1; s < numIter; s++){
+        //update the beta to the new beta
+        beta = update_beta(beta,  X, Y, eta, lambda, K, p, n);
+        
+        //generates new probability with the updated beta
+        arma::mat new_probability = softmax_c(X, beta);
+        
+        //find new objective function value and store in objective vector
+        abjective(s) = objective_function(veat, new_probability, lambda, X, Y, K, n);
+    }
     
     // Create named list with betas and objective values
     return Rcpp::List::create(Rcpp::Named("beta") = beta,
