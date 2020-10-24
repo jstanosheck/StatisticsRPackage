@@ -24,7 +24,7 @@ arma::mat soft_max_c(arma::mat X, arma::mat beta){
 }
 
 //Create objective function. Will have for loop
-double objective_function(arma::mat beta, arma::mat probability,
+double objective_function(arma::mat& beta, arma::mat probability,
                              double lambda, arma::mat& X, arma::uvec& Y){
     //initialize local variables
     int K = max(Y) +1; //gets the number of classes in Y when classes are 0 to K-1
@@ -46,6 +46,21 @@ double objective_function(arma::mat beta, arma::mat probability,
     double objective = -sum(inner_obj) + lambda_sum;
     
     return(objective);
+}
+
+//create update beta function loop through K
+arma::mat update_beta(arma::mat& beta, arma::mat& X, arma::uvec& Y,
+                      double eta, double lambda){
+    //initialize local variables
+    int K = max(Y) +1; //gets the number of classes in Y when classes are 0 to K-1
+    int p = X.cols(); //gets the number of columns in X
+    arma::mat prob = soft_max_c(X, beta); //gets the probability for the current beta
+    arma::vec lambda_vec(p, lambda); //generates vector of length p with values lambda
+    arma::mat lam = arma::diagmat(lambda_vec); //generates diagonal matrix 
+    arma::mat new_beta = arma::zeros(p, K); //generates p x K matrix of 0's 
+    
+    //loop to set new_beta
+    
 }
 
 // For simplicity, no test data, only training data, and no error calculation.
