@@ -35,7 +35,7 @@ double objective_function(arma::mat& beta, arma::mat probability, double lambda,
     //loop to get log probability for each K value
     for (int i = 0, i < K, i++){
         //finds the indexes of Y that follow the logical function
-        arma::uvec index = arma::find(Y == i -1);
+        arma::uvec index = arma::find(Y == i);
         
         //finds the log(probability) for each index 
         inner_obj(index) = log(probability(index, i));
@@ -47,8 +47,8 @@ double objective_function(arma::mat& beta, arma::mat probability, double lambda,
 }
 
 //generate the gradient for the logistic function
-arma::mat logistic_gradient(arma::mat&X, arma::uvec& Y, arma::mat& beta, double lambda,
-                            int K, int n){
+arma::mat logistic_gradient(arma::mat&X, arma::uvec& Y, arma::mat& beta,
+                            double lambda, int K, int n){
     
 }
 
