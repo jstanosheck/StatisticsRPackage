@@ -27,10 +27,10 @@ arma::uvec MyKmeans_c(const arma::mat& X, int K,
     
     
     // For loop with kmeans algorithm
-    
-    int maxiter = 1000;
+    //Loop through either until numIter is reached, or until there is no change
+    //in the centroids between 2 iterations
     int aa = 0;
-    while(aa < maxiter){
+    while(aa < numIter){
         
         // initialize clust_init
         arma::mat clust_init = M_loop;
@@ -55,13 +55,14 @@ arma::uvec MyKmeans_c(const arma::mat& X, int K,
         }
         
         clust_init -= M_loop;
-        double converge_diff = std::abs( accu(clust_init) );
+        double converge_diff = std::fabs( accu(clust_init) );
         
         // if statement to monitor convergence level
         if(converge_diff == 0){
             break;
         }
         
+        //update the iteration count
         aa++;
         
     }
