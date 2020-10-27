@@ -29,7 +29,7 @@ arma::mat softmax_c(arma::mat X, arma::mat beta){
 //Create objective function. Will have for loop
 // [[Rcpp::export]]
 double objective_function_c(arma::mat& beta, arma::mat& probability, double lambda,
-                          arma::mat& X, arma::uvec& Y, int K, int n){
+                          const arma::mat& X, const arma::uvec& Y, int K, int n){
     //initialize local variables
     arma::colvec inner_obj(n); //vector of size n
     
@@ -56,7 +56,7 @@ double objective_function_c(arma::mat& beta, arma::mat& probability, double lamb
 
 //generate the gradient for the logistic function
 // [[Rcpp::export]]
-arma::mat logistic_gradient(arma::mat& X, arma::uvec& Y, arma::mat& beta,
+arma::mat logistic_gradient(const arma::mat& X, const arma::uvec& Y, arma::mat& beta,
                             double lambda, int K, int n){
     //initialize probability matrix with old probabilities
     arma::mat prob_mat = softmax_c(X, beta); //initializes n x K matrix of 0's
@@ -81,7 +81,7 @@ arma::mat logistic_gradient(arma::mat& X, arma::uvec& Y, arma::mat& beta,
 
 //create update beta function loop through K
 // [[Rcpp::export]]
-arma::mat update_beta_c(arma::mat& beta, arma::mat& X, arma::uvec& Y,
+arma::mat update_beta_c(arma::mat& beta, const arma::mat& X, const arma::uvec& Y,
                       double eta, double lambda, int K, int p, int n){
     //initialize local variables
     arma::mat prob = softmax_c(X, beta); //gets the probability for the current beta
@@ -133,18 +133,18 @@ Rcpp::List LRMultiClass_c(const arma::mat& X, const arma::uvec& y, const arma::m
     arma::mat initial_probability = softmax_c(X, beta);
     objective(0) = objective_function_c(beta, initial_probability, lambda, X, y, K, n);
 
-    // // Newton's method cycle - implement the update EXACTLY numIter iterations
-    // for (int s = 1; s < numIter; s++){
-    //     //update the beta to the new beta
-    //     beta = update_beta_c(beta,  X, y, eta, lambda, K, p, n);
-    // 
-    //     //generates new probability with the updated beta
-    //     arma::mat new_probability = softmax_c(X, beta);
-    // 
-    //     //find new objective function value and store in objective vector
-    //     objective(s) = objective_function_c(beta, new_probability, lambda, X, y, K, n);
-    // }
-    // 
+    // Newton's method cycle - implement the update EXACTLY numIter iterations
+    for (int s = 1; s < numIter + 1; s++){
+        //update the beta to the new beta
+        beta = update_beta_c(beta,  X, y, eta, lambda, K, p, n);
+
+        //generates new probability with the updated beta
+        arma::mat new_probability = softmax_c(X, beta);
+
+        //find new objective function value and store in objective vector
+        objective(s) = objective_function_c(beta, new_probability, lambda, X, y, K, n);
+    }
+
     // Create named list with betas and objective values
     return Rcpp::List::create(Rcpp::Named("beta") = beta,
                               Rcpp::Named("objective") = objective);
