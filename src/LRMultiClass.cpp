@@ -85,23 +85,23 @@ arma::mat update_beta_c(arma::mat& beta, arma::mat& X, arma::uvec& Y,
                       double eta, double lambda, int K, int p, int n){
     //initialize local variables
     arma::mat prob = softmax_c(X, beta); //gets the probability for the current beta
-    arma::vec lambda_vec(p, lambda); //generates vector of length p with values lambda
+    arma::vec lambda_vec (p); //generates vector of length p
+    lambda_vec.fill(lambda);//fills lambda_vec with values lambda
     arma::mat lam = arma::diagmat(lambda_vec); //generates diagonal matrix
     arma::mat new_beta = arma::zeros(p, K); //generates p x K matrix of 0's
-
+    
     //loop to set new_beta
     for (int i = 0; i < K; i++){
         //weight for instance K
         arma::colvec w = prob.col(i) % (1 - prob.col(i));
-
         //multiply X * w to get the weighted X to find Hessian
         arma::mat weighted_X = X.each_col() % w;
-
-        //find Hessian by multiplying xTxw + lam
+     
+         //find Hessian by multiplying xTxw + lam
         arma::mat H = X.t() * weighted_X + lam;
 
         //find gradient
-        arma::mat beta_gradient = logistic_gradient(X, Y, beta, lambda, K, n);
+        arma::colvec beta_gradient = logistic_gradient(X, Y, beta, lambda, K, n).col(i);
 
         //update column i of new_beta matrix
         new_beta.col(i) = beta.col(i) - eta * arma::solve(H, beta_gradient);
@@ -110,42 +110,42 @@ arma::mat update_beta_c(arma::mat& beta, arma::mat& X, arma::uvec& Y,
     return(new_beta);
 }
 
-// // For simplicity, no test data, only training data, and no error calculation.
-// // X - n x p data matrix
-// // y - n length vector of classes, from 0 to K-1
-// // numIter - number of iterations, default 50
-// // eta - damping parameter, default 0.1
-// // lambda - ridge parameter, default 1
-// // beta_init - p x K matrix of starting beta values (always supplied in right format)
-// // [[Rcpp::export]]
-// Rcpp::List LRMultiClass_c(const arma::mat& X, const arma::uvec& y, const arma::mat& beta_init,
-//                                int numIter = 50, double eta = 0.1, double lambda = 1){
-//     // All input is assumed to be correct
-// 
-//     // Initialize some parameters
-//     int K = max(y) + 1; // number of classes
-//     int p = X.n_cols;
-//     int n = X.n_rows;
-//     arma::mat beta = beta_init; // to store betas and be able to change them if needed
-//     arma::vec objective(numIter + 1); // to store objective values
-// 
-//     // Starting value of objective function and initial probability
-//     arma::mat initial_probability = softmax_c(X, beta);
-//     objective(0) = objective_function_c(beta, initial_probability, lambda, X, y, K, n);
-// 
-//     // Newton's method cycle - implement the update EXACTLY numIter iterations
-//     for (int s = 1; s < numIter; s++){
-//         //update the beta to the new beta
-//         beta = update_beta_c(beta,  X, y, eta, lambda, K, p, n);
-// 
-//         //generates new probability with the updated beta
-//         arma::mat new_probability = softmax_c(X, beta);
-// 
-//         //find new objective function value and store in objective vector
-//         objective(s) = objective_function_c(beta, new_probability, lambda, X, y, K, n);
-//     }
-// 
-//     // Create named list with betas and objective values
-//     return Rcpp::List::create(Rcpp::Named("beta") = beta,
-//                               Rcpp::Named("objective") = objective);
-// }
+// For simplicity, no test data, only training data, and no error calculation.
+// X - n x p data matrix
+// y - n length vector of classes, from 0 to K-1
+// numIter - number of iterations, default 50
+// eta - damping parameter, default 0.1
+// lambda - ridge parameter, default 1
+// beta_init - p x K matrix of starting beta values (always supplied in right format)
+// [[Rcpp::export]]
+Rcpp::List LRMultiClass_c(const arma::mat& X, const arma::uvec& y, const arma::mat& beta_init,
+                               int numIter = 50, double eta = 0.1, double lambda = 1){
+    // All input is assumed to be correct
+
+    // Initialize some parameters
+    int K = max(y) + 1; // number of classes
+    int p = X.n_cols;
+    int n = X.n_rows;
+    arma::mat beta = beta_init; // to store betas and be able to change them if needed
+    arma::vec objective(numIter + 1); // to store objective values
+
+    // Starting value of objective function and initial probability
+    arma::mat initial_probability = softmax_c(X, beta);
+    objective(0) = objective_function_c(beta, initial_probability, lambda, X, y, K, n);
+
+    // // Newton's method cycle - implement the update EXACTLY numIter iterations
+    // for (int s = 1; s < numIter; s++){
+    //     //update the beta to the new beta
+    //     beta = update_beta_c(beta,  X, y, eta, lambda, K, p, n);
+    // 
+    //     //generates new probability with the updated beta
+    //     arma::mat new_probability = softmax_c(X, beta);
+    // 
+    //     //find new objective function value and store in objective vector
+    //     objective(s) = objective_function_c(beta, new_probability, lambda, X, y, K, n);
+    // }
+    // 
+    // Create named list with betas and objective values
+    return Rcpp::List::create(Rcpp::Named("beta") = beta,
+                              Rcpp::Named("objective") = objective);
+}
