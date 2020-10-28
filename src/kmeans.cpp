@@ -19,7 +19,7 @@ arma::uvec MyKmeans_c(const arma::mat& X, int K,
     
     // Initialize some parameters
     int n = X.n_rows;
-    int p = X.n_cols;
+    // int p = X.n_cols;
     arma::uvec Y(n); // to store cluster assignments
     
     // Initialize any additional parameters if needed
