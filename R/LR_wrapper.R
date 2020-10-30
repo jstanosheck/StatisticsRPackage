@@ -1,12 +1,12 @@
 
 #' Multi-Class Logistic Regression
 #'
-#' @param X -Matrix of n x p of the training data set. Where n is the number of instances and p is the number of variables
-#' @param y -Vector of length n with the ground truth class labels for each instance. The class labels must be 0 to K-1.
-#' @param numIter -The number of iterations the function will run before reporting a result. The default number is 50.
-#' @param eta -The learning rate of the function. The default value is 0.1.
-#' @param lambda -The ridge optimization parameter. The default value is 1
-#' @param beta_init -(Optional) Matrix of p x K that is the initial values for beta in the algorithm. The default value is a zero matrix.
+#' @param X Matrix of n x p of the training data set. Where n is the number of instances and p is the number of variables
+#' @param y Vector of length n with the ground truth class labels for each instance. The class labels must be 0 to K-1.
+#' @param numIter The number of iterations the function will run before reporting a result. The default number is 50.
+#' @param eta The learning rate of the function. The default value is 0.1.
+#' @param lambda The ridge optimization parameter. The default value is 1
+#' @param beta_init (Optional) Matrix of p x K that is the initial values for beta in the algorithm. The default value is a zero matrix.
 #'
 #' @return
 #' @export
@@ -14,6 +14,10 @@
 #' @examples
 #' # Give example
 LRMultiClass <- function(X, y, numIter = 50, eta = 0.1, lambda = 1, beta_init = NULL){
+  
+  # Ensure that X is of matrix type and that y is of type vector
+  X <- as.matrix(X)
+  y <- as.vector(y)
   
   #set initial dimension parameters
   K <- max(unique(y)) +1
