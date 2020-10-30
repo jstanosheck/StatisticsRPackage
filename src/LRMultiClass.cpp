@@ -34,7 +34,7 @@ double objective_function_c(arma::mat& beta, arma::mat& probability, double lamb
     arma::colvec inner_obj(n); //vector of size n
     
     //finds the sum of beta^2 and multiplies it by lambda/2
-    double lambda_sum = (lambda / 2) * arma::accu(arma::pow(beta, 2));
+    double lambda_sum = (lambda / 2) * arma::accu(beta % beta);
     
     //loop to get log probability for each K value
     for (int i = 0; i < K; i++){
