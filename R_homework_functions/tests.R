@@ -78,4 +78,22 @@ microbenchmark::microbenchmark(MyKmeans_c(X, K, M), MyKmeans_R(X, K, M), kmeans(
 ##          Tests for LRMultiClass          ##
 ##############################################
 
+# Letter data
+#########################
+letter <- read.table("R_homework_functions/Data/letter-train.txt", header = F, colClasses = "numeric")
+X <- as.matrix(letter[, -1])
+Y <- letter[, 1]
 
+numIter = 50
+eta = .1
+lambda = 1
+beta_init = NULL 
+
+sourceCpp('src/LRMultiClass.cpp')
+source('R/LR_wrapper.R')
+out <- LRMultiClass_c(X = X, y = Y, numIter = numIter, eta = eta, lambda = lambda, beta_init = beta_init)
+
+microbenchmark::microbenchmark(
+  LRMultiClass(X = X, y = Y, numIter = numIter, eta = eta, lambda = lambda, beta_init = beta_init),
+  times = 5
+)
