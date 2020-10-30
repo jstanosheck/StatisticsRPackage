@@ -44,7 +44,7 @@ arma::uvec MyKmeans_c(const arma::mat& X, int K,
         mTm.zeros();
         xmT.zeros();
         
-            xTx.each_col() = sum( X % X, 1);
+        xTx.each_col() = sum( X % X, 1);
         mTm.each_row() = sum( M_loop % M_loop, 1).t();
         xmT = 2 * (X * M_loop.t());
         
