@@ -60,13 +60,15 @@ microbenchmark::microbenchmark(MyKmeans_c(X, K, M))
 sourceCpp("./src/kmeans.cpp")
 source("R_homework_functions/FunctionsKmeans - JS.R")
 source('R/Kmeans_wrapper.R')
-
+K = 3
 
 X <- rbind(matrix(rnorm(1000, sd = 0.2), ncol = 2),
            matrix(rnorm(1000, mean = 2, sd = .15), ncol = 2),
            matrix(rnorm(1000, mean = 1, sd = 0.2), ncol = 2))
-kmeans_colors <- MyKmeans(X, K = 3)
-plot(X)#, col = kmeans_colors)
+kmeans_colors_C <- MyKmeans(X, K)
+kmeans_colors_R <- MyKmeans_R(X, K)
+plot(X, col = kmeans_colors_C)
+plot(X, col = kmeans_colors_R)
 
 
 MyKmeans_c(X, K, M)
