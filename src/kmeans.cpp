@@ -43,10 +43,8 @@ arma::uvec MyKmeans_c(const arma::mat& X, int K,
         mTm.zeros();
         xmT.zeros();
         
-        for(int ii = 0; ii < K; ii++){
-            xTx.col(ii) = sum( pow(X, 2), 1);
-        }
-        mTm.each_row() = sum( pow(M_loop, 2), 1).t();
+        xTx.each_col() = sum( X % X, 1);
+        mTm.each_row() = sum( M_loop % M_loop, 1).t();
         xmT = 2 * (X * M_loop.t());
         
         arma::mat euc_dist = xTx + mTm - xmT;
