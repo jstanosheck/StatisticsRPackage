@@ -1,5 +1,5 @@
 # Function that implements K-means algorithm. The default number of maximal iterations is 100.
-MyKmeans2 <- function(X, K, M = NULL, numIter = 100){
+MyKmeans_R <- function(X, K, M = NULL, numIter = 100){
   
   X <- as.matrix( X, drop = F ) # ensure that X is of the proper form
   
