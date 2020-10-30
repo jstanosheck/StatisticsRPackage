@@ -25,6 +25,10 @@ arma::uvec MyKmeans_c(const arma::mat& X, int K,
     // Initialize any additional parameters if needed
     arma::mat M_loop = M;
     
+    // Expand Squared Euclidean Distance into ||X||^2 , ||M||^2 , and -2 * X * t(M)
+    arma::mat xTx(n, K, arma::fill::zeros); // Initialize for ||X||^2
+    arma::mat mTm(n, K, arma::fill::zeros); // Initialize for ||M||^2
+    arma::mat xmT(n, K, arma::fill::zeros); // Initialize for 2 * X * t(M)
     
     // For loop with kmeans algorithm
     //Loop through either until numIter is reached, or until there is no change
@@ -35,16 +39,15 @@ arma::uvec MyKmeans_c(const arma::mat& X, int K,
         // initialize clust_init
         arma::mat clust_init = M_loop;
         
-        // Expand Squared Euclidean Distance into ||X||^2 , ||M||^2 , and -2 * X * t(M)
-        arma::mat xTx(n, K, arma::fill::zeros); // Initialize for ||X||^2
-        arma::mat mTm(n, K, arma::fill::zeros); // Initialize for ||M||^2
-        arma::mat xmT(n, K, arma::fill::zeros); // Initialize for 2 * X * t(M)
+        xTx.zeros();
+        mTm.zeros();
+        xmT.zeros();
         
         for(int ii = 0; ii < K; ii++){
             xTx.col(ii) = sum( pow(X, 2), 1);
-            mTm.each_row() = sum( pow(M_loop, 2), 1).t();
-            xmT = 2 * (X * M_loop.t());
         }
+        mTm.each_row() = sum( pow(M_loop, 2), 1).t();
+        xmT = 2 * (X * M_loop.t());
         
         arma::mat euc_dist = xTx + mTm - xmT;
         Y = index_max(-euc_dist, 1);
@@ -58,7 +61,7 @@ arma::uvec MyKmeans_c(const arma::mat& X, int K,
         double converge_diff = std::fabs( accu(clust_init) );
         
         // if statement to monitor convergence level
-        if(converge_diff == 0){
+        if(converge_diff < 0.000001){
             break;
         }
         
