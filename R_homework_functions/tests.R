@@ -84,16 +84,27 @@ letter <- read.table("R_homework_functions/Data/letter-train.txt", header = F, c
 X <- as.matrix(letter[, -1])
 Y <- letter[, 1]
 
+letter2 <- read.table("R_homework_functions/Data/letter-train.txt", header = F, colClasses = "numeric")
+Xt <- as.matrix(letter2[, -1])
+Yt <- letter2[, 1]
+
+X <- cbind(1,X)
+Xt <- cbind(1,Xt)
+
 numIter = 50
 eta = .1
 lambda = 1
-beta_init = NULL 
+K = length( unique(Y) )
+beta_init = matrix( 0, nrow = ncol( X ), ncol = K )
 
 sourceCpp('src/LRMultiClass.cpp')
 source('R/LR_wrapper.R')
-out <- LRMultiClass_c(X = X, y = Y, numIter = numIter, eta = eta, lambda = lambda, beta_init = beta_init)
+source('R_homework_functions/FunctionsLR - JS.R')
+source('R_homework_functions/FunctionsLR.R')
+out <- LRMultiClass_c(X = X, y = Y, beta_init = beta_init)
 
 microbenchmark::microbenchmark(
-  LRMultiClass(X = X, y = Y, numIter = numIter, eta = eta, lambda = lambda, beta_init = beta_init),
+  LRMultiClass_c(X = X, y = Y, numIter = numIter, eta = eta, lambda = lambda, beta_init = beta_init),
+  LRMultiClass_JHS(X = X, Xt = X, y = Y, yt = Y, numIter = numIter, eta = eta, lambda = lambda, beta_init = beta_init),
   times = 5
 )
