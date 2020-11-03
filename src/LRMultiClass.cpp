@@ -12,17 +12,14 @@
 // [[Rcpp::export]]
 arma::mat softmax_c(arma::mat X, arma::mat beta){
     
-    //multilply x and beta to get xbeta
-    arma::mat xbeta = X * beta;
+    // exponentiate x multiplied by beta 
+    arma::mat xbeta = exp(X * beta);
     
     //find the sum of the rows of exp(xbeta)
-    arma::colvec denom = sum(exp(xbeta), 1);
-    
-    //finds e^xbeta for each element
-    arma::mat expXbeta = exp(xbeta);
+    arma::colvec denom = sum(xbeta, 1);
     
     //calculates the probabilities for each element in the matrix
-    arma::mat softmax = expXbeta.each_col() / denom;
+    arma::mat softmax = xbeta.each_col() / denom;
     return(softmax);
 }
 
@@ -146,6 +143,18 @@ Rcpp::List LRMultiClass_c(const arma::mat& X, const arma::uvec& y, const arma::m
     }
 
     // Create named list with betas and objective values
-    return Rcpp::List::create(Rcpp::Named("beta") = beta,
-                              Rcpp::Named("objective") = objective);
+    // return Rcpp::List::create(Rcpp::Named("beta") = beta,
+    //                           Rcpp::Named("objective") = objective);
+    Rcpp::List out;
+    out["beta"] = beta;
+    out["objective"] = objective;
+    
+    return out;
 }
+
+/*** R
+microbenchmark::microbenchmark(
+ softmax_c_orig(X, beta_init),
+ softmax_c(X, beta_init)
+)
+*/
