@@ -12,7 +12,14 @@
 #' @export
 #'
 #' @examples
-#' # Give example
+#' 
+#' X <- cbind( 1, matrix( sample( 2:12, size = 900, replace = T, prob = rep(1/33, 11)), 100, 9) )
+#' Y <- matrix( sample( 1:5, size = 100, replace = T, prob = rep(1/33, 5)), 100, 1)
+#' K = length( unique(Y) )
+#' #beta_init2 = matrix( 0, nrow = ncol( X ), ncol = K)
+#' 
+#' LRMultiClass(X = X, y = Y)
+#' 
 LRMultiClass <- function(X, y, numIter = 50, eta = 0.1, lambda = 1, beta_init = NULL){
   
   # Ensure that X is of matrix type and that y is of type vector
@@ -50,8 +57,9 @@ LRMultiClass <- function(X, y, numIter = 50, eta = 0.1, lambda = 1, beta_init = 
   }
   ###############################################################
   # Call C++ LRMultiClass_c function to implement the algorithm
-  out = LRMultiClass_c(X, y, numIter, eta, lambda, beta_init)
+  out = LRMultiClass_c(X, y, beta_init, numIter, eta, lambda)
   
   # Return the class assignments
   return(out)
 }
+
