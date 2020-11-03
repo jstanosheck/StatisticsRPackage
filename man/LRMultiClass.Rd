@@ -7,17 +7,17 @@
 LRMultiClass(X, y, numIter = 50, eta = 0.1, lambda = 1, beta_init = NULL)
 }
 \arguments{
-\item{X}{-Matrix of n x p of the training data set. Where n is the number of instances and p is the number of variables}
+\item{X}{Matrix of n x p of the training data set. Where n is the number of instances and p is the number of variables}
 
-\item{y}{-Vector of length n with the ground truth class labels for each instance. The class labels must be 0 to K-1.}
+\item{y}{Vector of length n with the ground truth class labels for each instance. The class labels must be 0 to K-1.}
 
-\item{numIter}{-The number of iterations the function will run before reporting a result. The default number is 50.}
+\item{numIter}{The number of iterations the function will run before reporting a result. The default number is 50.}
 
-\item{eta}{-The learning rate of the function. The default value is 0.1.}
+\item{eta}{The learning rate of the function. The default value is 0.1.}
 
-\item{lambda}{-The ridge optimization parameter. The default value is 1}
+\item{lambda}{The ridge optimization parameter. The default value is 1}
 
-\item{beta_init}{-(Optional) Matrix of p x K that is the initial values for beta in the algorithm. The default value is a zero matrix.}
+\item{beta_init}{(Optional) Matrix of p x K that is the initial values for beta in the algorithm. The default value is a zero matrix.}
 }
 \value{
 
@@ -26,5 +26,31 @@ LRMultiClass(X, y, numIter = 50, eta = 0.1, lambda = 1, beta_init = NULL)
 Multi-Class Logistic Regression
 }
 \examples{
-# Give example
+# Example #1:
+set.seed(123)
+#set the initial size parameters
+n <- 10
+p <- 2
+k <- 2
+X <- matrix(runif(n * p), n, p)
+X[ , 1] <- 1
+y <- sample(0:(k-1), n, replace = TRUE)
+betaInit <- matrix(runif(p * k), p, k)
+
+LRMultiClass(X, y, beta_init = betaInit)
+
+#Output:
+#          [,1]       [,2]
+# [1,] 0.3337088  0.2369798
+# [2,] 0.4432530 -0.1145357
+
+
+# Example #2:
+X <- cbind( 1, matrix( sample( 2:12, size = 900, replace = T, prob = rep(1/33, 11)), 100, 9) )
+Y <- matrix( sample( 1:5, size = 100, replace = T, prob = rep(1/33, 5)), 100, 1)
+K = length( unique(Y) )
+#beta_init2 = matrix( 0, nrow = ncol( X ), ncol = K)
+
+LRMultiClass(X = X, y = Y)
+
 }
