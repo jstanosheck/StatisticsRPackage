@@ -86,6 +86,7 @@ arma::mat update_beta_c(arma::mat& beta, const arma::mat& X, const arma::uvec& Y
     lambda_vec.fill(lambda);//fills lambda_vec with values lambda
     arma::mat lam = arma::diagmat(lambda_vec); //generates diagonal matrix
     arma::mat new_beta = arma::zeros(p, K); //generates p x K matrix of 0's
+    arma::mat beta_gradient = logistic_gradient(X, Y, beta, lambda, K, n);
     
     //loop to set new_beta
     for (int i = 0; i < K; i++){
@@ -97,11 +98,9 @@ arma::mat update_beta_c(arma::mat& beta, const arma::mat& X, const arma::uvec& Y
          //find Hessian by multiplying xTxw + lam
         arma::mat H = X.t() * weighted_X + lam;
 
-        //find gradient
-        arma::colvec beta_gradient = logistic_gradient(X, Y, beta, lambda, K, n).col(i);
 
         //update column i of new_beta matrix
-        new_beta.col(i) = beta.col(i) - eta * arma::solve(H, beta_gradient);
+        new_beta.col(i) = beta.col(i) - eta * arma::solve(H, beta_gradient.col(i));
     }
 
     return(new_beta);
@@ -151,10 +150,3 @@ Rcpp::List LRMultiClass_c(const arma::mat& X, const arma::uvec& y, const arma::m
     
     return out;
 }
-
-/*** R
-microbenchmark::microbenchmark(
- softmax_c_orig(X, beta_init),
- softmax_c(X, beta_init)
-)
-*/
