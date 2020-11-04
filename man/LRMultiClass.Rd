@@ -46,8 +46,8 @@ LRMultiClass(X, y, beta_init = betaInit)
 
 
 # Example #2
-X <- cbind( 1, matrix( sample( 2:12, size = 900, replace = T, prob = rep(1/33, 11)), 100, 9) )
-Y <- matrix( sample( 1:5, size = 100, replace = T, prob = rep(1/33, 5)), 100, 1)
+X <- cbind( 1, matrix( sample( 2:12, size = 900, replace = TRUE, prob = rep(1/33, 11)), 100, 9) )
+Y <- matrix( sample( 1:5, size = 100, replace = TRUE, prob = rep(1/33, 5)), 100, 1)
 K = length( unique(Y) )
 #beta_init2 = matrix( 0, nrow = ncol( X ), ncol = K)
 

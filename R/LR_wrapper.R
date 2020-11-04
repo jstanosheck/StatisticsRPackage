@@ -7,7 +7,7 @@
 #' @param lambda The ridge optimization parameter. The default value is 1
 #' @param beta_init (Optional) Matrix of p x K that is the initial values for beta in the algorithm. The default value is a zero matrix.
 #'
-#' @return
+#' @return List with a matrix of beta values and column vector of objective values
 #' @export
 #'
 #' @examples
@@ -31,8 +31,8 @@
 #' 
 #' 
 #' # Example #2
-#' X <- cbind( 1, matrix( sample( 2:12, size = 900, replace = T, prob = rep(1/33, 11)), 100, 9) )
-#' Y <- matrix( sample( 1:5, size = 100, replace = T, prob = rep(1/33, 5)), 100, 1)
+#' X <- cbind( 1, matrix( sample( 2:12, size = 900, replace = TRUE, prob = rep(1/33, 11)), 100, 9) )
+#' Y <- matrix( sample( 1:5, size = 100, replace = TRUE, prob = rep(1/33, 5)), 100, 1)
 #' K = length( unique(Y) )
 #' #beta_init2 = matrix( 0, nrow = ncol( X ), ncol = K)
 #' 
