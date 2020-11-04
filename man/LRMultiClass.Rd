@@ -20,7 +20,7 @@ LRMultiClass(X, y, numIter = 50, eta = 0.1, lambda = 1, beta_init = NULL)
 \item{beta_init}{(Optional) Matrix of p x K that is the initial values for beta in the algorithm. The default value is a zero matrix.}
 }
 \value{
-
+List with a matrix of beta values and column vector of objective values
 }
 \description{
 Multi-Class Logistic Regression
