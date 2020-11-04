@@ -29,4 +29,10 @@ data(iris)
 iris_data <- iris[, -5]
 MyKmeans(iris_data, K = 3)
 
+X <- rbind(matrix(rnorm(1000, sd = 0.2), ncol = 2),
+           matrix(rnorm(1000, mean = 2, sd = .15), ncol = 2),
+           matrix(rnorm(1000, mean = 1, sd = 0.2), ncol = 2))
+kmeans_colors <- MyKmeans(X, K = 3)
+plot(X, col = kmeans_colors + 1)
+
 }
