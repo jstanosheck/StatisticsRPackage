@@ -9,7 +9,6 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 
 //Create softmax_c function that gets the probability in a matrix form
-// [[Rcpp::export]]
 arma::mat softmax_c(arma::mat X, arma::mat beta){
     
     // exponentiate x multiplied by beta 
@@ -24,7 +23,6 @@ arma::mat softmax_c(arma::mat X, arma::mat beta){
 }
 
 //Create objective function. Will have for loop
-// [[Rcpp::export]]
 double objective_function_c(arma::mat& beta, arma::mat& probability, double lambda,
                           const arma::mat& X, const arma::uvec& Y, int K, int n){
     //initialize local variables
@@ -52,7 +50,6 @@ double objective_function_c(arma::mat& beta, arma::mat& probability, double lamb
 }
 
 //generate the gradient for the logistic function
-// [[Rcpp::export]]
 arma::mat logistic_gradient(const arma::mat& X, const arma::uvec& Y, arma::mat& beta,
                             double lambda, int K, int n){
     //initialize probability matrix with old probabilities
@@ -77,7 +74,6 @@ arma::mat logistic_gradient(const arma::mat& X, const arma::uvec& Y, arma::mat& 
 }
 
 //create update beta function loop through K
-// [[Rcpp::export]]
 arma::mat update_beta_c(arma::mat& beta, const arma::mat& X, const arma::uvec& Y,
                       double eta, double lambda, int K, int p, int n){
     //initialize local variables
